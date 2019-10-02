@@ -30,5 +30,22 @@ class ALALALController extends Controller
                     // ]);
                     // return $response->getBody();
     }
+    public function Start (Request $request)
+    {
+                $credentials = request(['email', 'password']);
+                // Auth::once
+        if (!Auth::once($credentials))
+        {
+            return response()->json([
+                'message' => 'Usuario y/o contraseñas invalidas'], 401);
+                // abort(401);
+        }
+        $token = Str::random(60);
+        $request->user()->forceFill([
+            'api_token' => hash('sha256', $token),
+        ])->save();
+        return response()->json(['message' =>'Token creado con exito'],201);
+
+    }
 
 }

@@ -20,3 +20,4 @@ Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
 Route.post('Send', 'AlalalController.send');
+Route.post('Start', 'AlalalController.start');

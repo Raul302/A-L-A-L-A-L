@@ -10,6 +10,7 @@ use App\User;
 
 class ALALALController extends Controller
 {
+   
     public function Registrar(Request $request)
     {
         $usuario= new User([
@@ -18,12 +19,36 @@ class ALALALController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $usuario->save();
-                    $body = ["email"=>$request->email,"password"=>$request->password,"username"=>$request->username];
-                    $client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:3334/']);
-                    $response = $client->post('http://127.0.0.1:3334/Send',
+                    $body = ["email"=>$request->email,"password"=>$request->password,"username"=>$request->username,
+                            "name"=>$request->name];
+                    $client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:3340/']);
+                    $response = $client->post('http://127.0.0.1:3340/Send',
                     [
                         'form_params' => $body
                     ]);
                     return $response->getBody();
+    }
+    public function Start(Request $request)
+    {
+         $credentials = request(['email', 'password']);
+                // Auth::once
+        if (!Auth::once($credentials))
+        {
+            return response()->json([
+                'message' => 'Usuario y/o contraseñas invalidas'], 401);
+                // abort(401);
+        }
+        $token = Str::random(60);
+        $request->user()->forceFill([
+            'api_token' => hash('sha256', $token),
+        ])->save();
+                $body = ["email"=>$request->email,"password"=>$request->password,"username"=>$request->username,
+                "name"=>$request->name];
+        $client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:3340/']);
+        $response = $client->post('http://127.0.0.1:3340/Start',
+        [
+            'form_params' => $body
+        ]);
+        return $response->getBody();
     }
 }

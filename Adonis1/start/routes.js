@@ -21,3 +21,4 @@ Route.get('/', () => {
 })
 Route.get('Ejemplo', 'ALALALController.index');
 Route.post('Send', 'ALALALController.send');
+Route.post('Start', 'ALALALController.start');
